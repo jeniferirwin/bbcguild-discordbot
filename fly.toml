@@ -1,0 +1,16 @@
+# fly.toml app configuration file generated for bbcguild on 2025-05-13T02:27:15-04:00
+#
+# See https://fly.io/docs/reference/configuration/ for information about how to use this file.
+#
+
+app = 'bbcguild'
+primary_region = 'iad'
+
+[build]
+  dockerfile = "Dockerfile"
+  console_command = "bash /root/start.sh"
+
+[[vm]]
+  memory = '1gb'
+  cpu_kind = 'shared'
+  cpus = 1
