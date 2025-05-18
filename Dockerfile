@@ -15,9 +15,6 @@ COPY start-bot.sh .
 COPY package.json .
 COPY setup.sh .
 COPY .env .
-
-# Comment out the below line if you want a smaller image. This will make spin-up time significantly
-# longer, however, as it has to build all of the modules each time.
 COPY node_modules .
 RUN /root/setup.sh
 
