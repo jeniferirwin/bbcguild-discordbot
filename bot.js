@@ -19,6 +19,12 @@ const runBot = () => {
             await bot.createMessage(msg.channel.id, "Update started...");
             await resetCache();
             await bot.createMessage(msg.channel.id, "Update done");
+        } else if (msg.content === "!rankinfo") {
+            let reply = `I'm sending you a DM with the info, <@${msg.author.id}>!`;
+            await bot.createMessage(msg.channel.id, reply);
+            let target = await bot.getDMChannel(msg.author.id);
+            await bot.createMessage(target.id,
+                "**BBC RANKINGS OVERVIEW:**\n\nOur rankings reports are updated weekly(ish) and are based on a rolling 30-Day History.\nEach update, an old week drops off and the latest week is added.\n\nThis report tracks all forms of contributions to the guild (and they all count equally).\n\n**RANKINGS DETERMINE MEMBER REMOVALS:**\nEach week, we make room for new members in the guild by removing the lowest contributing members.\nThose contributing less than 25% of their fair share over the past 30 days are at highest risk of removal.\n\n**NEW MEMBERS UNDER 30 DAYS:**\n\nWe won't have a full picture for you in this report until you've been a member for at least 30 days.\nThis is taken into consideration when we do our weekly purges.  For instance, if you've been in the guild for 10 days, we'll evaluate what tripling your activity looks like.\n\n**QUESTIONS OR CONCERNS:**\nIf there's something you don't understand, or if you think we've made a mistake with your contributions history, please reach out to @Hiyde!\n\n**THANK YOU FOR SUPPORTING THE BBC!**");
         } else if (msg.content.startsWith("!")) { // assumes every argument that gets here is a user
             let command = msg.content;
             let user = command.replace("!", "");
