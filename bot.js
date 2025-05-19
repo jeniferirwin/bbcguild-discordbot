@@ -69,6 +69,7 @@ let sendMemberEmbed = async (member, msg) => {
     const converter = (val) =>  { var f = Intl.NumberFormat(); return f.format(val.toFixed(0)) };
     // console.log(member);
     const lastUpdated = new Date(member["timeupdated"] * 1000);
+    const share_value = member["monthly_share"];
 
     await bot.createMessage(msg.channel.id, {
         embeds: [{
@@ -81,21 +82,27 @@ let sendMemberEmbed = async (member, msg) => {
             color: 0xFF6600,
             fields: [
                 {
-                    name: "Your Share of Weekly cost",
-                    value: converter(member["weekly_cost"]),
+                    name: "Your Share of our Kiosk Bid:",
+                    value: converter(member["weekly_cost"]) + "g per week - 344,000g per month",
                     inline: false
                 },
                 {
-                    name: "Rank",
-                    value: member["rank"],
-                    inline: true
+                    name: `You have contributed ${share_value} of your Fair Share for the past 30 days.`,
+                    value: '',
+                    inline: false
+                },
+                {
+                    name: `Your Rank: ${member["rank"]}`,
+                    value: '',
+                    inline: false
+                },
+                
+                {
+                    name: "Contributions Breakdown:",
+                    value: '',
+                    inline: false
                 },
 
-                {
-                    name: "Monthly Share",
-                    value: member["monthly_share"],
-                    inline: true
-                },
                 {
                     name: "Sales Tax",
                     value: converter(member["sales_tax"]),
@@ -122,13 +129,18 @@ let sendMemberEmbed = async (member, msg) => {
                     inline: true
                 },
                 {
-                    name: "Total Gold",
-                    value: converter(member["total_gold"]),
+                    name: '',
+                    value: '',
                     inline: true
+                },
+                {
+                    name: `Total Gold Contributed: ${converter(member["total_gold"])}`,
+                    value: '',
+                    inline: false
                 }
             ],
             footer: {
-                text: `Rankings last updated ${ lastUpdated.getMonth() + 1 }/${ lastUpdated.getDate() }/${ lastUpdated.getFullYear() }`
+                text: `Rankings last updated ${ lastUpdated.getMonth() + 1 }/${ lastUpdated.getDate() }/${ lastUpdated.getFullYear() }\nType !rankinfo to learn how rankings work`
             }
         }]
     });
