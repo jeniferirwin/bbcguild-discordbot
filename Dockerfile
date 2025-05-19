@@ -15,7 +15,7 @@ COPY start-bot.sh .
 COPY package.json .
 COPY setup.sh .
 COPY .env .
-COPY node_modules .
+#COPY node_modules .
 RUN /root/setup.sh
 
 FROM setup AS build
