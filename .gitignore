@@ -129,9 +129,3 @@ dist
 .yarn/build-state.yml
 .yarn/install-state.gz
 .pnp.*
-prisma/
-prisma/migrations/20230111222513_add/migration.sql
-prisma/migrations/20230111224319_change_to_float/migration.sql
-prisma/migrations/20230111224458_change_more_to_float/migration.sql
-prisma/migrations/20230111230722_change_monthly_share/migration.sql
-prisma/schema.prisma
