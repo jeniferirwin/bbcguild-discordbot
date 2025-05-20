@@ -1,4 +1,4 @@
-# fly.toml app configuration file generated for bbcguild on 2025-05-13T02:27:15-04:00
+# fly.toml app configuration file generated for bbcguild-test on 2025-05-19T21:31:47Z
 #
 # See https://fly.io/docs/reference/configuration/ for information about how to use this file.
 #
@@ -7,8 +7,7 @@ app = 'bbcguild'
 primary_region = 'iad'
 
 [build]
-  dockerfile = "Dockerfile"
-  console_command = "bash /root/start.sh"
+  dockerfile = 'Dockerfile'
 
 [[vm]]
   memory = '1gb'
