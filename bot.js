@@ -104,27 +104,27 @@ let sendMemberEmbed = async (member, msg) => {
                 },
 
                 {
-                    name: "Sales Tax",
+                    name: member["header1"],
                     value: converter(member["sales_tax"]),
                     inline: true
                 },
                 {
-                    name: "Purchase Tax",
+                    name: member["header2"],
                     value: converter(member["purchase_tax"]) ,
                     inline: true
                 },
                 {
-                    name: "Raffle Tix",
+                    name: member["header3"],
                     value: converter(member["raffle_tix"]),
                     inline: true
                 },
                 {
-                    name: "Bank Misc",
+                    name: member["header4"],
                     value: converter(member["bank_misc"]),
                     inline: true
                 },
                 {
-                    name: "Auctions",
+                    name: member["header5"],
                     value: converter(member["auctions"]),
                     inline: true
                 },

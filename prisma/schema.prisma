@@ -18,6 +18,11 @@ model Member {
     monthly_share String
     weekly_cost   Int    @default(175000)
     timeupdated   Int    @default(1674159696)
+    header1       String
+    header2       String
+    header3       String
+    header4       String
+    header5       String
     sales_tax     Float
     purchase_tax  Float
     raffle_tix    Float
