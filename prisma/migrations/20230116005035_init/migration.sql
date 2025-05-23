@@ -9,12 +9,12 @@ CREATE TABLE `Member` (
     `header3` VARCHAR(191) NOT NULL,
     `header4` VARCHAR(191) NOT NULL,
     `header5` VARCHAR(191) NOT NULL,
-    `sales_tax` DOUBLE NOT NULL,
-    `purchase_tax` DOUBLE NOT NULL,
-    `raffle_tix` DOUBLE NOT NULL,
-    `bank_misc` DOUBLE NOT NULL,
-    `auctions` DOUBLE NOT NULL,
-    `total_gold` DOUBLE NOT NULL,
+    `value1` FLOAT NOT NULL,
+    `value2` FLOAT NOT NULL,
+    `value3` FLOAT NOT NULL,
+    `value4` FLOAT NOT NULL,
+    `value5` FLOAT NOT NULL,
+    `total_gold` FLOAT NOT NULL,
 
     PRIMARY KEY (`id`)
 ) DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;

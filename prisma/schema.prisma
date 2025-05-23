@@ -23,10 +23,10 @@ model Member {
     header3       String
     header4       String
     header5       String
-    sales_tax     Float
-    purchase_tax  Float
-    raffle_tix    Float
-    bank_misc     Float
-    auctions      Float
+    value1        Float
+    value2        Float
+    value3        Float
+    value4        Float
+    value5        Float
     total_gold    Float
 }

@@ -70,6 +70,8 @@ let sendMemberEmbed = async (member, msg) => {
     // console.log(member);
     const lastUpdated = new Date(member["timeupdated"] * 1000);
     const share_value = member["monthly_share"];
+    const cpw = converter(member["weekly_cost"]);
+    const cpm = converter(member["weekly_cost"] * 4.3);
 
     await bot.createMessage(msg.channel.id, {
         embeds: [{
@@ -83,7 +85,7 @@ let sendMemberEmbed = async (member, msg) => {
             fields: [
                 {
                     name: "Your Share of our Kiosk Bid:",
-                    value: converter(member["weekly_cost"]) + "g per week - 344,000g per month",
+                    value: cpw + "g per week - " + cpm + "g per month",
                     inline: false
                 },
                 {
@@ -105,27 +107,27 @@ let sendMemberEmbed = async (member, msg) => {
 
                 {
                     name: member["header1"],
-                    value: converter(member["sales_tax"]),
+                    value: converter(member["value1"]),
                     inline: true
                 },
                 {
                     name: member["header2"],
-                    value: converter(member["purchase_tax"]) ,
+                    value: converter(member["value2"]) ,
                     inline: true
                 },
                 {
                     name: member["header3"],
-                    value: converter(member["raffle_tix"]),
+                    value: converter(member["value3"]),
                     inline: true
                 },
                 {
                     name: member["header4"],
-                    value: converter(member["bank_misc"]),
+                    value: converter(member["value4"]),
                     inline: true
                 },
                 {
                     name: member["header5"],
-                    value: converter(member["auctions"]),
+                    value: converter(member["value5"]),
                     inline: true
                 },
                 {
@@ -203,7 +205,6 @@ const resetCache = async () => {
     
     // use this instead of map() to ensure synchronicity
     for(let k = 0; k < allData.length; k++){
-        // console.log(row);
         for(let i = 0; i < allData[k].length; i++){
             
             let id = count;
