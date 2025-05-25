@@ -65,13 +65,39 @@ let handleUser = async(user, msg) => {
     }
 }
 
+let getEmoticon = (share_value) => {
+    let share_number = share_value.replace(/\D/g, '');
+    share_number = parseInt(share_number);
+    let emoticon = '';
+
+    if (share_number < 25) {
+        emoticon = ':rotating_light:';
+    }
+    else if (share_number < 50) {
+        emoticon = ':warning:';
+    }
+    else if (share_number < 75) {
+        emoticon = ':bell:';
+    }
+    else if (share_number < 100) {
+        emoticon = ':white_check_mark:';
+    }
+    else {
+        emoticon = ':partying_face:';
+    }
+
+    return emoticon;
+}
+
 let sendMemberEmbed = async (member, msg) => {
     const converter = (val) =>  { var f = Intl.NumberFormat(); return f.format(val.toFixed(0)) };
     // console.log(member);
     const lastUpdated = new Date(member["timeupdated"] * 1000);
-    const share_value = member["monthly_share"];
     const cpw = converter(member["weekly_cost"]);
     const cpm = converter(member["weekly_cost"] * 4.3);
+    let share_value = member["monthly_share"];
+    let emoticon = getEmoticon(share_value);
+
 
     await bot.createMessage(msg.channel.id, {
         embeds: [{
@@ -89,7 +115,7 @@ let sendMemberEmbed = async (member, msg) => {
                     inline: false
                 },
                 {
-                    name: `You have contributed ${share_value} of your Fair Share for the past 30 days.`,
+                    name: `${emoticon} You have contributed ${share_value} of your Fair Share for the past 30 days.`,
                     value: '',
                     inline: false
                 },
