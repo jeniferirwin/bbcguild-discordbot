@@ -3,13 +3,12 @@
 # See https://fly.io/docs/reference/configuration/ for information about how to use this file.
 #
 
-app = 'bbcguild'
+app = 'bbcguild-test'
 primary_region = 'iad'
-
 [build]
   dockerfile = 'Dockerfile'
 
 [[vm]]
-  memory = '1gb'
+  memory = '512mb'
   cpu_kind = 'shared'
   cpus = 1

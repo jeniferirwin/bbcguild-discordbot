@@ -5,6 +5,7 @@ import { PrismaClient } from "@prisma/client"
 const prisma = new PrismaClient();
 const bot = new Eris(process.env.BOT_TOKEN);
 const sheetURL = process.env.SHEET_URL;
+const rankInfoURL = process.env.RANKINFO_URL;
 
 const runBot = () => {
     bot.on("ready", () => {
@@ -23,8 +24,9 @@ const runBot = () => {
             let reply = `I'm sending you a DM with the info, <@${msg.author.id}>!`;
             await bot.createMessage(msg.channel.id, reply);
             let target = await bot.getDMChannel(msg.author.id);
-            await bot.createMessage(target.id,
-                "**BBC RANKINGS OVERVIEW:**\nOur rankings reports are updated weekly(ish) and are based on a rolling 30-Day History.\nEach update, an old week drops off and the latest week is added.\n\nThis report tracks all forms of contributions to the guild (and they all count equally), including the 3.5% cut the guild gets from your sales and purchases, raffle tickets, gold deposited to the bank and item donations from guild farming events or sent to our auction account.\n\n**RANKINGS DETERMINE MEMBER REMOVALS:**\nEach week, we make room for new members in the guild by removing the lowest contributing members.\nThose contributing less than 25% of their fair share over the past 30 days are at highest risk of removal.\n\n**NEW MEMBERS UNDER 30 DAYS:**\nWe won't have a full picture for you in this report until you've been a member for at least 30 days.\nThis is taken into consideration when we do our weekly purges.  For instance, if you've been in the guild for 10 days, we'll evaluate what tripling your activity looks like.\n\n**CHECKING YOUR RANK:**\nYou can use the BBC-Rankbot to check your rank in the #bbc-rankbot channel by typing !username (your ESO @name without the @ sign.)\n\nYou can check the full ranking reports for all members at:\n<https://bbcguild.com/ranks>\n\nBe sure to make note of the \"Last Updated\" date.\n\n**QUESTIONS OR CONCERNS:**\nIf there's something you don't understand, or if you think we've made a mistake with your contributions history, please reach out to @Hiyde!\n\n**THANK YOU FOR SUPPORTING THE BBC!**");
+            //await bot.createMessage(target.id, "**BBC RANKINGS OVERVIEW:**\nOur rankings reports are updated weekly(ish) and are based on a rolling 30-Day History.\nEach update, an old week drops off and the latest week is added.\n\nThis report tracks all forms of contributions to the guild (and they all count equally), including the 3.5% cut the guild gets from your sales and purchases, raffle tickets, gold deposited to the bank and item donations from guild farming events or sent to our auction account.\n\n**RANKINGS DETERMINE MEMBER REMOVALS:**\nEach week, we make room for new members in the guild by removing the lowest contributing members.\nThose contributing less than 25% of their fair share over the past 30 days are at highest risk of removal.\n\n**NEW MEMBERS UNDER 30 DAYS:**\nWe won't have a full picture for you in this report until you've been a member for at least 30 days.\nThis is taken into consideration when we do our weekly purges.  For instance, if you've been in the guild for 10 days, we'll evaluate what tripling your activity looks like.\n\n**CHECKING YOUR RANK:**\nYou can use the BBC-Rankbot to check your rank in the #bbc-rankbot channel by typing !username (your ESO @name without the @ sign.)\n\nYou can check the full ranking reports for all members at:\n<https://bbcguild.com/ranks>\n\nBe sure to make note of the \"Last Updated\" date.\n\n**QUESTIONS OR CONCERNS:**\nIf there's something you don't understand, or if you think we've made a mistake with your contributions history, please reach out to @Hiyde!\n\n**THANK YOU FOR SUPPORTING THE BBC!**");
+            let rankinfo = await getRankInfo();
+            await bot.createMessage(target.id, rankinfo);
         } else if (msg.content.startsWith("!")) { // assumes every argument that gets here is a user
             let command = msg.content;
             let user = command.replace("!", "");
@@ -165,11 +167,16 @@ let sendMemberEmbed = async (member, msg) => {
                     name: `Total Gold Contributed: ${converter(member["total_gold"])}`,
                     value: '',
                     inline: false
+                },
+                {
+                    name: '',
+                    value: `:calendar_spiral: Rankings last updated ${ lastUpdated.getMonth() + 1 }/${ lastUpdated.getDate() }/${ lastUpdated.getFullYear() }\n:warning:New Members won't have full info for 30 days\n:question:Type !rankinfo to learn how rankings work`,
+                    inline: false
                 }
             ],
-            footer: {
-                text: `Rankings last updated ${ lastUpdated.getMonth() + 1 }/${ lastUpdated.getDate() }/${ lastUpdated.getFullYear() }\nType !rankinfo to learn how rankings work`
-            }
+            /*footer: {
+                text: `:calendar_spiral: Rankings last updated ${ lastUpdated.getMonth() + 1 }/${ lastUpdated.getDate() }/${ lastUpdated.getFullYear() }\n:warning:New Members won't have full info for 30 days\n:question:Type !rankinfo to learn how rankings work`
+            }*/
         }]
     });
 }
@@ -195,6 +202,17 @@ const getUserDetails = async (member) => {
         });
 
         return response.data
+    } catch (e){
+        return { status: "failed", msg: "request failed" }
+    }
+}
+
+const getRankInfo = async () => {
+    try {
+        const response = await axios.get(rankInfoURL, {params: { member: "all" }});
+        print(response.data);
+        return response.data;
+        
     } catch (e){
         return { status: "failed", msg: "request failed" }
     }
