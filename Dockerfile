@@ -7,7 +7,6 @@ RUN --mount=type=cache,uid=0,gid=0,target=/var/cache/apt apt-get --yes install n
 
 FROM debinstall AS setup
 WORKDIR /root
-COPY init.sql .
 COPY prisma .
 COPY bot.js .
 COPY entrypoint.sh .
