@@ -1,6 +1,6 @@
 # syntax=docker/dockerfile:1
 
-FROM debian:trixie-slim AS debinstall
+FROM debian:bookworm AS debinstall
 SHELL [ "/bin/bash", "-c" ]
 RUN apt-get update
 RUN --mount=type=cache,uid=0,gid=0,target=/var/cache/apt apt-get --yes install npm mariadb-server
@@ -15,7 +15,6 @@ COPY start-bot.sh .
 COPY package.json .
 COPY setup.sh .
 COPY .env .
-#COPY node_modules .
 RUN /root/setup.sh
 
 FROM setup AS build
