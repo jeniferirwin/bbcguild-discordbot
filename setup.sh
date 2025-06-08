@@ -1,5 +1,5 @@
-sudo apt-get update
-sudo apt-get --yes install npm mariadb-server curl git
+apt-get update
+apt-get --yes install npm mariadb-server curl git
 export $(grep -v '^#' .env | xargs)
 service mariadb start
 echo "CREATE USER IF NOT EXISTS ${BOTNAME}@localhost; GRANT ALL PRIVILEGES ON *.* TO ${BOTNAME}@localhost; FLUSH PRIVILEGES;" | mysql
