@@ -71,7 +71,7 @@ let getEmoticon = (share_value) => {
     let emoticon = '';
 
     if (share_number < 25) {
-        emoticon = ':rotating_light:';
+        emoticon = ':no_entry:';
     }
     else if (share_number < 50) {
         emoticon = ':warning:';
