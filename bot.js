@@ -111,7 +111,7 @@ let sendMemberEmbed = async (member, msg) => {
             fields: [
                 {
                     name: "Your Share of our Kiosk Bid:",
-                    value: cpw + "g per week - " + cpm + "g per month",
+                    value: cpw + "g per week (" + cpm + "g per month)",
                     inline: false
                 },
                 {
@@ -162,7 +162,7 @@ let sendMemberEmbed = async (member, msg) => {
                     inline: true
                 },
                 {
-                    name: `Total Gold Contributed: ${converter(member["total_gold"])}`,
+                    name: `:moneybag: Total Gold Contributed: ${converter(member["total_gold"])}`,
                     value: '',
                     inline: false
                 }
