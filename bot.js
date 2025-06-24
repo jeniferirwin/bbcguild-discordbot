@@ -168,7 +168,7 @@ let sendMemberEmbed = async (member, msg) => {
                 }
             ],
             footer: {
-                text: `Rankings last updated ${ lastUpdated.getMonth() + 1 }/${ lastUpdated.getDate() }/${ lastUpdated.getFullYear() }\nType !rankinfo to learn how rankings work`
+                text: `Rankings last updated ${ lastUpdated.getMonth() + 1 }/${ lastUpdated.getDate() }/${ lastUpdated.getFullYear() }\nNote: New Members won't have full info for 30 days\nType !rankinfo to learn how rankings work`
             }
         }]
     });
