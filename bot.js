@@ -6,9 +6,14 @@ const prisma = new PrismaClient();
 const bot = new Eris(process.env.BOT_TOKEN);
 const sheetURL = process.env.SHEET_URL;
 
+// Heartbeat configuration
+let heartbeatInterval;
+const HEARTBEAT_INTERVAL = 60000; // 60 seconds
+
 const runBot = () => {
     bot.on("ready", () => {
         console.log("Ready!");
+        startHeartbeat();
     });
 
     bot.on("messageCreate", async (msg) => {
@@ -36,15 +41,76 @@ const runBot = () => {
 
     bot.on("error", (err) => {
         console.log(err);
+        if (err.code === 1006) {
+            console.log("Connection lost, attempting to reconnect...");
+            bot.connect();
+        } else if (err.code === 4004) {
+            console.error("CRITICAL: Invalid bot token! Check your BOT_TOKEN environment variable.");
+            process.exit(1); // Stop the bot - invalid token won't fix itself
+        } else if (err.code === 4008) {
+            console.log("Rate limited, waiting 5 seconds before reconnecting...");
+            setTimeout(() => bot.connect(), 5000);
+        } else if (err.code === 4011) {
+            console.error("CRITICAL: Bot is in too many guilds and requires sharding!");
+            process.exit(1);
+        } else if (err.code === 4013 || err.code === 4014) {
+            console.error("CRITICAL: Invalid or disallowed intents configured!");
+            process.exit(1);
+        } else if ([1000, 1001, 1002, 1003, 1005, 1011].includes(err.code)) {
+            console.log(`WebSocket error ${err.code}, attempting to reconnect...`);
+            bot.connect();
+        } else if ([4000, 4001, 4002, 4003, 4009].includes(err.code)) {
+            console.log(`Gateway error ${err.code}, attempting to reconnect...`);
+            bot.connect();
+        } else {
+            console.error("An error occurred:", err);
+        }
     })
     
     bot.on("disconnect", () => {
         console.log("Disconnected. Don't panic, this is usually normal. Reconnecting...");
+        stopHeartbeat();
         bot.connect();
     })
     
     bot.connect();
 }
+
+// Heartbeat functions
+const startHeartbeat = () => {
+    if (heartbeatInterval) {
+        clearInterval(heartbeatInterval);
+    }
+    
+    heartbeatInterval = setInterval(async () => {
+        try {
+            // Check if bot is connected by checking the status
+            if (bot.ready && bot.shards && bot.shards.size > 0) {
+                const shard = bot.shards.get(0);
+                if (shard && shard.status === "ready") {
+                    console.log("Heartbeat: Connection healthy");
+                    return;
+                }
+            }
+            
+            // If we get here, connection might be unhealthy
+            console.log("Heartbeat: Connection appears unhealthy, attempting reconnect...");
+            bot.connect();
+            
+        } catch (error) {
+            console.log("Heartbeat: Error during health check, attempting reconnect...", error);
+            bot.connect();
+        }
+    }, HEARTBEAT_INTERVAL);
+};
+
+const stopHeartbeat = () => {
+    if (heartbeatInterval) {
+        clearInterval(heartbeatInterval);
+        heartbeatInterval = null;
+        console.log("Heartbeat stopped");
+    }
+};
 
 let handleUser = async(user, msg) => {   
     // console.log(msg);
