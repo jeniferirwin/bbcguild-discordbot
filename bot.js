@@ -283,36 +283,74 @@ const getAllData = async () => {
 }
 
 const resetCache = async () => {
-    // reset the db
-    const allData = await getAllData();
+    try {
+        // reset the db
+        const allData = await getAllData();
 
-    if ("error" in allData) {
-        console.log(allData);
-        return
-    }
-
-    // console.log()
-    // clear old data
-    await prisma.member.deleteMany();
-    let count = 1;
-    
-    // use this instead of map() to ensure synchronicity
-    for(let k = 0; k < allData.length; k++){
-        for(let i = 0; i < allData[k].length; i++){
-            
-            let id = count;
-            let temp = { id, ...allData[k][i] };
-
-            if ( !((typeof temp.monthly_share) === "string") ){
-                temp.monthly_share = `${ (temp.monthly_share * 100).toFixed(0) }%`;
-            }
-            
-            await prisma.member.create({
-                data: temp
-            });
-
-            count++;
+        if ("error" in allData) {
+            console.log("Error fetching data:", allData);
+            return
         }
+
+        console.log(`Resetting cache with ${allData.length} data groups...`);
+        
+        // clear old data
+        await prisma.member.deleteMany();
+        let count = 1;
+        
+        // use this instead of map() to ensure synchronicity
+        for(let k = 0; k < allData.length; k++){
+            for(let i = 0; i < allData[k].length; i++){
+                try {
+                    let id = count;
+                    let rawData = allData[k][i];
+                    
+                    console.log(`Processing record ${count}:`, JSON.stringify(rawData, null, 2));
+
+                    if ( !((typeof rawData.monthly_share) === "string") ){
+                        rawData.monthly_share = `${ (rawData.monthly_share * 100).toFixed(0) }%`;
+                    }
+                    
+                    // Map the API data to our database schema
+                    const memberData = {
+                        id: id,
+                        rank: rawData.rank || 0,
+                        member: rawData.member || '',
+                        sheet_title: rawData.sheet_title || 'Sheet Title',
+                        monthly_share: rawData.monthly_share || '0%',
+                        weekly_cost: rawData.weekly_cost || 175000,
+                        timeupdated: rawData.timeupdated || Math.floor(Date.now() / 1000),
+                        // Map the actual API fields to header/value pairs
+                        header1: rawData.sales_tax !== undefined ? 'Sales Tax' : '',
+                        header2: rawData.purchase_tax !== undefined ? 'Purchase Tax' : '',
+                        header3: rawData.raffle_tix !== undefined ? 'Raffle Tickets' : '',
+                        header4: rawData.bank_misc !== undefined ? 'Bank/Misc' : '',
+                        header5: rawData.auctions !== undefined ? 'Auctions' : '',
+                        value1: parseFloat(rawData.sales_tax) || 0,
+                        value2: parseFloat(rawData.purchase_tax) || 0,
+                        value3: parseFloat(rawData.raffle_tix) || 0,
+                        value4: parseFloat(rawData.bank_misc) || 0,
+                        value5: parseFloat(rawData.auctions) || 0,
+                        total_gold: parseFloat(rawData.total_gold) || 0
+                    };
+                    
+                    await prisma.member.create({
+                        data: memberData
+                    });
+
+                    count++;
+                } catch (error) {
+                    console.error(`Error creating member record ${count}:`, error);
+                    console.error("Raw data that failed:", JSON.stringify(allData[k][i], null, 2));
+                    // Continue with next record instead of stopping entirely
+                    count++;
+                }
+            }
+        }
+        
+        console.log(`Cache reset completed. Processed ${count - 1} records.`);
+    } catch (error) {
+        console.error("Error in resetCache:", error);
     }
 }
 
