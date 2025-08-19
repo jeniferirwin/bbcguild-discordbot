@@ -14,6 +14,7 @@ const runBot = () => {
     bot.on("ready", () => {
         console.log("Ready!");
         startHeartbeat();
+        resetCache();
     });
 
     bot.on("messageCreate", async (msg) => {
